@@ -1,7 +1,7 @@
 ﻿const apiUrl = "https://localhost:5001/api";
 
 //Bring Customer Details From QB
-document.getElementById("GetDetailsFromQb").addEventListener(onclick, async (e) => {
+document.getElementById("GetDetailsFromQb").addEventListener("click", async (e) => {
     e.preventDefault();
     const token = localStorage.getItem("token");
 
@@ -11,17 +11,17 @@ document.getElementById("GetDetailsFromQb").addEventListener(onclick, async (e) 
     }
 
     try {
-        const response = await fetch(`${apiUrl}`, {
+        const response = await fetch(`${apiUrl}/Coustomer/getFromQB`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}/Coustomer/getFromQB`
+                "Authorization": `Bearer ${token}`
             }
         });
 
         if (response.ok) {
             const data = await response.json();
-            createInfoSections(data.Customer);
+            createInfoSections(data.customer);
         } else {
             const error = await response.json();
             alert(`Error: ${error.message}`);
@@ -83,12 +83,14 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         if (response.ok) {
             const data = await response.json();
-            if (!data.IsAuthorticated) {
+            if (!data.isAuthorticated) {
                 toggleAuthanticate(false);
             }
             else {
                 toggleAuthanticate(true);
-                createInfoSections(data.Customer);
+                if (data.customer) {
+                    createInfoSections(data.customer);
+                }
             }
         } else {
             const error = await response.json();

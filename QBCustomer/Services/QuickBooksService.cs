@@ -37,11 +37,11 @@ namespace QBCustomer.Services
         //reference to QuickBook authorization 
 
        
-        public string InitiateAuth()
+        public string InitiateAuth(string userId)
         {
             List<OidcScopes> scopes = new List<OidcScopes>();
             scopes.Add(OidcScopes.Accounting);
-            string authorizeUrl = auth2Client.GetAuthorizationURL(scopes);
+            string authorizeUrl = auth2Client.GetAuthorizationURL(scopes,userId);
             Console.WriteLine("Authorization URL: " + authorizeUrl);
             return authorizeUrl;
         }

@@ -105,35 +105,77 @@ namespace QBCustomer.Services
 
         public async Task<CustomerModel> UpdateCustomerInDb(CustomerModel existingCustomer, CustomerModel customer)
         {
-           
-            // Update the scalar properties of the existing customer
+            // Update scalar properties
+            existingCustomer.UsrId = customer.UsrId != 0 ? customer.UsrId : existingCustomer.UsrId;
+            existingCustomer.QuickBooksId = customer.QuickBooksId ?? existingCustomer.QuickBooksId;
             existingCustomer.GivenName = customer.GivenName ?? existingCustomer.GivenName;
             existingCustomer.FamilyName = customer.FamilyName ?? existingCustomer.FamilyName;
             existingCustomer.DisplayName = customer.DisplayName ?? existingCustomer.DisplayName;
+            existingCustomer.FullyQualifiedName = customer.FullyQualifiedName ?? existingCustomer.FullyQualifiedName;
             existingCustomer.CompanyName = customer.CompanyName ?? existingCustomer.CompanyName;
-            existingCustomer.PrimaryEmailAddr = customer.PrimaryEmailAddr ?? existingCustomer.PrimaryEmailAddr;
-            existingCustomer.Active = customer.Active;
 
-            // Update the nested BillAddr property if provided
+            // Update nullable boolean properties
+            existingCustomer.BillWithParent = customer.BillWithParent ?? existingCustomer.BillWithParent;
+            existingCustomer.Job = customer.Job ?? existingCustomer.Job;
+            existingCustomer.Active = customer.Active ?? existingCustomer.Active;
+            existingCustomer.Taxable = customer.Taxable ?? existingCustomer.Taxable;
+
+            // Update decimal properties
+            existingCustomer.Balance = customer.Balance ?? existingCustomer.Balance;
+            existingCustomer.BalanceWithJobs = customer.BalanceWithJobs ?? existingCustomer.BalanceWithJobs;
+
+            // Update string properties
+            existingCustomer.PreferredDeliveryMethod = customer.PreferredDeliveryMethod ?? existingCustomer.PreferredDeliveryMethod;
+            existingCustomer.PrintOnCheckName = customer.PrintOnCheckName ?? existingCustomer.PrintOnCheckName;
+            existingCustomer.SyncToken = customer.SyncToken ?? existingCustomer.SyncToken;
+
+            // Update datetime properties
+            existingCustomer.CreateTime = customer.CreateTime ?? existingCustomer.CreateTime;
+            existingCustomer.LastUpdatedTime = customer.LastUpdatedTime ?? existingCustomer.LastUpdatedTime;
+
+            // Update BillAddr property with null check and property-level null-coalescing
             if (customer.BillAddr != null)
             {
-                existingCustomer.BillAddr.City = customer.BillAddr.City ?? existingCustomer.BillAddr.City;
+                if (existingCustomer.BillAddr == null)
+                {
+                    existingCustomer.BillAddr = new QbAddress();
+                }
+
                 existingCustomer.BillAddr.Line1 = customer.BillAddr.Line1 ?? existingCustomer.BillAddr.Line1;
+                existingCustomer.BillAddr.City = customer.BillAddr.City ?? existingCustomer.BillAddr.City;
                 existingCustomer.BillAddr.PostalCode = customer.BillAddr.PostalCode ?? existingCustomer.BillAddr.PostalCode;
+                existingCustomer.BillAddr.CountrySubDivisionCode = customer.BillAddr.CountrySubDivisionCode ?? existingCustomer.BillAddr.CountrySubDivisionCode;
                 existingCustomer.BillAddr.Lat = customer.BillAddr.Lat ?? existingCustomer.BillAddr.Lat;
                 existingCustomer.BillAddr.Long = customer.BillAddr.Long ?? existingCustomer.BillAddr.Long;
-                existingCustomer.BillAddr.CountrySubDivisionCode = customer.BillAddr.CountrySubDivisionCode ?? existingCustomer.BillAddr.CountrySubDivisionCode;
+                existingCustomer.BillAddr.QuickBooksAddressId = customer.BillAddr.QuickBooksAddressId ?? existingCustomer.BillAddr.QuickBooksAddressId;
             }
 
-            // Update the PrimaryPhone property if provided
+            // Update PrimaryPhone property with null check and property-level null-coalescing
             if (customer.PrimaryPhone != null)
             {
+                if (existingCustomer.PrimaryPhone == null)
+                {
+                    existingCustomer.PrimaryPhone = new QbContactInfo();
+                }
+
                 existingCustomer.PrimaryPhone.FreeFormNumber = customer.PrimaryPhone.FreeFormNumber ?? existingCustomer.PrimaryPhone.FreeFormNumber;
+                existingCustomer.PrimaryPhone.Address = customer.PrimaryPhone.Address ?? existingCustomer.PrimaryPhone.Address;
+            }
+
+            // Update PrimaryEmailAddr property with null check and property-level null-coalescing
+            if (customer.PrimaryEmailAddr != null)
+            {
+                if (existingCustomer.PrimaryEmailAddr == null)
+                {
+                    existingCustomer.PrimaryEmailAddr = new QbContactInfo();
+                }
+
+                existingCustomer.PrimaryEmailAddr.FreeFormNumber = customer.PrimaryEmailAddr.FreeFormNumber ?? existingCustomer.PrimaryEmailAddr.FreeFormNumber;
+                existingCustomer.PrimaryEmailAddr.Address = customer.PrimaryEmailAddr.Address ?? existingCustomer.PrimaryEmailAddr.Address;
             }
 
             // Save the changes to the database
             _db.SaveChanges();
-
             return existingCustomer;
         }
 

@@ -19,7 +19,8 @@ namespace QBCustomer.Controllers
         [HttpGet("QBAuthorize")]
         public IActionResult QBAuthorize()
         {
-            string url = _quickBooksService.InitiateAuth();
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            string url = _quickBooksService.InitiateAuth(userId);
             //return Redirect(url);
             return Ok(url);
 
@@ -31,9 +32,9 @@ namespace QBCustomer.Controllers
         {
             string code = Request.Query["code"].ToString() ?? "none";
             string realmId = Request.Query["realmId"].ToString() ?? "none";
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            await _quickBooksService.SaveToken(code, realmId,userId);
-            return Ok();
+            string state = Request.Query["state"].ToString() ?? "none";
+            await _quickBooksService.SaveToken(code, realmId,state);
+            return Redirect("https://localhost:7170/page/CustomerDetails.html");
         }
 
       
