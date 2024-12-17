@@ -3,15 +3,20 @@
     background-color: #f4f4f4;
     margin: 0;
     padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
 }
 
-.AuthenticationDiv{
+.AuthenticationDiv {
+    width: 100%;
     max-width: 500px;
-    margin: 50px auto;
     background: white;
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
 }
 
 h1, h2 {
@@ -24,23 +29,56 @@ form {
 
 input {
     display: block;
-    width: 100%;
-    margin: 10px 0;
+    width: calc(100% - 22px);
+    margin: 10px auto;
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
 }
 
-button {
-    width: 100%;
-    padding: 10px;
-    background-color: #007BFF;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
+.button-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-    button:hover {
-        background-color: #0056b3;
+button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 10px;
+    background-color: #03B98E;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+    width: 40%;
+    height: 50px;
+    margin: 10px;
+}
+
+#signInButton, #signUpButton {
+    background: none;
+    border: none;
+    color: #03B98E;
+    font-size: 16px;
+    text-decoration: underline;
+    cursor: pointer;
+    padding: 0;
+    font-weight: bold;
+    box-shadow: none ;
+}
+
+    #signInButton:hover, #signUpButton:hover {
+        color: #02866C;
     }
+
+button:hover {
+    background-color: #02866C;
+}
+
+#loginText{
+    display: none;
+    color: red;
+}

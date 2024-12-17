@@ -7,7 +7,7 @@ document.getElementById("registerForm").addEventListener("submit", async (e) => 
     const email = document.getElementById("registerEmail").value;
     const password = document.getElementById("registerPassword").value;
 
-    if (!validatePassword(password)) {
+    if (!validatePassword(password)){
         return;
     }
 
@@ -27,7 +27,7 @@ document.getElementById("registerForm").addEventListener("submit", async (e) => 
         }
     } catch (err) {
         console.error("Error:", err);
-        alert("Failed to register.");
+        console.error("Error:", error);
     }
 });
 
@@ -36,6 +36,7 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
     e.preventDefault();
     const username = document.getElementById("loginUsername").value;
     const password = document.getElementById("loginPassword").value;
+
 
     try {
         const response = await fetch(`${apiUrl}/Auth/login`, {
@@ -52,8 +53,9 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
             window.location.href = "/page/CustomerDetails.html";
 
         } else {
+            document.getElementById("loginText").style.display = "block";
             const error = await response.json();
-            alert(`Error: ${error.message}`);
+            console.error("Error:",error);
         }
     } catch (err) {
         console.error("Error:", err);
@@ -61,33 +63,21 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
     }
 });
 
-// Logout User
-document.getElementById("logoutButton").addEventListener("click", () => {
-    localStorage.removeItem("token"); // delete token
-    alert("Logged out!");
-    toggleForms("login");
-});
+
 
 //choose sign in or sign up
-document.getElementById("signInButton").addEventListener("click", () => toggleForms("login"));
-document.getElementById("signUpButton").addEventListener("click", () => toggleForms("register"));
+document.getElementById("signInButton").addEventListener("click", () => toggleForms(false));
+document.getElementById("signUpButton").addEventListener("click", () => toggleForms(true));
 
-//check if there are token already
-document.addEventListener('DOMContentLoaded', () => {
-    const token = localStorage.getItem('token');
-    if (token) {
-        toggleForms('logout');
-    } else {
-        toggleForms('login');
-    }
-});
+
 
 
 // Toggle Forms
 function toggleForms(show) {
-    document.getElementById("registerForm").style.display = show === "register" ? "block" : "none";
-    document.getElementById("loginForm").style.display = show === "login" ? "block" : "none";
-    document.getElementById("logoutSection").style.display = show === "logout" ? "block" : "none";
+    document.getElementById("registerForm").style.display = show  ? "block" : "none";
+    document.getElementById("loginForm").style.display = !show ? "block" : "none";
+    document.getElementById("signInButton").style.display = show ? "block" : "none";
+    document.getElementById("signUpButton").style.display = !show ? "block" : "none";
 }
 
 function validatePassword(password) {
@@ -130,12 +120,10 @@ function validatePassword(password) {
         isValid = false;
     }
 
-    // Optional: Add visual feedback
     passwordText.style.color = isValid ? "green" : "red";
 
     return isValid;
 }
 
-//document.getElementById("passwordInput").addEventListener("input", (event) => {
-//    validatePassword(event.target.value);
-//});
+toggleForms(false);
+

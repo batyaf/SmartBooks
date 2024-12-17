@@ -23,9 +23,15 @@ namespace QBCustomer.Controllers
         [HttpGet("getFromQB")]
         public async Task<IActionResult> getCoustomeFromQB()
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var output = await _customersService.getCustomerFromQBApi(userId);
-            return Ok(output);
+            try
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var output = await _customersService.getCustomerFromQBApi(userId);
+                return Ok(output);
+            }
+            catch (Exception ex) {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
 

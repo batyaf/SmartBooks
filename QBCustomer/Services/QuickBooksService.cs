@@ -34,9 +34,7 @@ namespace QBCustomer.Services
             
         }
 
-        //reference to QuickBook authorization 
-
-       
+        //reference to QuickBook authorization
         public string InitiateAuth(string userId)
         {
             List<OidcScopes> scopes = new List<OidcScopes>();

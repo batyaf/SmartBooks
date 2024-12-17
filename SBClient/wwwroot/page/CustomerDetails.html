@@ -6,13 +6,16 @@
     <link rel="stylesheet" href="/Style/CustomerDetails.css">
 </head>
 <body id="body">
+    <div id="logoutSection">
+        <button id="logoutButton">Logout</button>
+    </div>
     <button id="AuthorizeQb">QuickBooks Authentication</button>
     <div id="CustomerDetails" class="CustomerDetailsDiv">
-        <button id="GetDetailsFromQb">Fetch from QuickBooks</button>
         <div id="ShowDetails">
-            <h2>Customer Information</h2>
+            <h2 id="info-header">Customer Information</h2>
             <section id="customer-info">
             </section>
+            <button id="GetDetailsFromQb">Fetch from QuickBooks</button>
         </div>
     </div>
     <script src="/Script/CustomerDetails.js"></script>

@@ -21,7 +21,6 @@ namespace QBCustomer.Controllers
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             string url = _quickBooksService.InitiateAuth(userId);
-            //return Redirect(url);
             return Ok(url);
 
         }

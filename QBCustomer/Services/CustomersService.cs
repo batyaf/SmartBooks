@@ -32,8 +32,8 @@ namespace QBCustomer.Services
             try
             {
                 var customerToken= await GetTokenFromDb(userId);
-                if (customerToken == null) { 
-
+                if (customerToken == null) {
+                    throw new Exception("No QBToken exists for this userId.");
                 }
                 OAuth2RequestValidator oauthValidator = new OAuth2RequestValidator(customerToken.Token);
                 ServiceContext serviceContext = new ServiceContext(customerToken.RealmId, IntuitServicesType.QBO, oauthValidator);
@@ -105,7 +105,7 @@ namespace QBCustomer.Services
 
         public async Task<CustomerModel> UpdateCustomerInDb(CustomerModel existingCustomer, CustomerModel customer)
         {
-            // Update scalar properties
+            // Update properties
             existingCustomer.UsrId = customer.UsrId != 0 ? customer.UsrId : existingCustomer.UsrId;
             existingCustomer.QuickBooksId = customer.QuickBooksId ?? existingCustomer.QuickBooksId;
             existingCustomer.GivenName = customer.GivenName ?? existingCustomer.GivenName;
@@ -113,27 +113,17 @@ namespace QBCustomer.Services
             existingCustomer.DisplayName = customer.DisplayName ?? existingCustomer.DisplayName;
             existingCustomer.FullyQualifiedName = customer.FullyQualifiedName ?? existingCustomer.FullyQualifiedName;
             existingCustomer.CompanyName = customer.CompanyName ?? existingCustomer.CompanyName;
-
-            // Update nullable boolean properties
             existingCustomer.BillWithParent = customer.BillWithParent ?? existingCustomer.BillWithParent;
             existingCustomer.Job = customer.Job ?? existingCustomer.Job;
             existingCustomer.Active = customer.Active ?? existingCustomer.Active;
             existingCustomer.Taxable = customer.Taxable ?? existingCustomer.Taxable;
-
-            // Update decimal properties
             existingCustomer.Balance = customer.Balance ?? existingCustomer.Balance;
             existingCustomer.BalanceWithJobs = customer.BalanceWithJobs ?? existingCustomer.BalanceWithJobs;
-
-            // Update string properties
             existingCustomer.PreferredDeliveryMethod = customer.PreferredDeliveryMethod ?? existingCustomer.PreferredDeliveryMethod;
             existingCustomer.PrintOnCheckName = customer.PrintOnCheckName ?? existingCustomer.PrintOnCheckName;
             existingCustomer.SyncToken = customer.SyncToken ?? existingCustomer.SyncToken;
-
-            // Update datetime properties
             existingCustomer.CreateTime = customer.CreateTime ?? existingCustomer.CreateTime;
             existingCustomer.LastUpdatedTime = customer.LastUpdatedTime ?? existingCustomer.LastUpdatedTime;
-
-            // Update BillAddr property with null check and property-level null-coalescing
             if (customer.BillAddr != null)
             {
                 if (existingCustomer.BillAddr == null)
@@ -149,8 +139,6 @@ namespace QBCustomer.Services
                 existingCustomer.BillAddr.Long = customer.BillAddr.Long ?? existingCustomer.BillAddr.Long;
                 existingCustomer.BillAddr.QuickBooksAddressId = customer.BillAddr.QuickBooksAddressId ?? existingCustomer.BillAddr.QuickBooksAddressId;
             }
-
-            // Update PrimaryPhone property with null check and property-level null-coalescing
             if (customer.PrimaryPhone != null)
             {
                 if (existingCustomer.PrimaryPhone == null)
@@ -161,8 +149,6 @@ namespace QBCustomer.Services
                 existingCustomer.PrimaryPhone.FreeFormNumber = customer.PrimaryPhone.FreeFormNumber ?? existingCustomer.PrimaryPhone.FreeFormNumber;
                 existingCustomer.PrimaryPhone.Address = customer.PrimaryPhone.Address ?? existingCustomer.PrimaryPhone.Address;
             }
-
-            // Update PrimaryEmailAddr property with null check and property-level null-coalescing
             if (customer.PrimaryEmailAddr != null)
             {
                 if (existingCustomer.PrimaryEmailAddr == null)
@@ -173,8 +159,6 @@ namespace QBCustomer.Services
                 existingCustomer.PrimaryEmailAddr.FreeFormNumber = customer.PrimaryEmailAddr.FreeFormNumber ?? existingCustomer.PrimaryEmailAddr.FreeFormNumber;
                 existingCustomer.PrimaryEmailAddr.Address = customer.PrimaryEmailAddr.Address ?? existingCustomer.PrimaryEmailAddr.Address;
             }
-
-            // Save the changes to the database
             _db.SaveChanges();
             return existingCustomer;
         }

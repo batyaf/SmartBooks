@@ -6,9 +6,9 @@ document.getElementById("GetDetailsFromQb").addEventListener("click", async (e) 
     const token = localStorage.getItem("token");
 
     if (!token) {
-        alert("Please login first!");
-        return;
+        window.location.href = "https://localhost:7170/page/Authentication.html";
     }
+
 
     try {
         const response = await fetch(`${apiUrl}/Coustomer/getFromQB`, {
@@ -37,8 +37,7 @@ document.getElementById("AuthorizeQb").addEventListener("click", async (e) => {
     const token = localStorage.getItem("token");
 
     if (!token) {
-        alert("Please login first!");
-        return;
+        window.location.href = "https://localhost:7170/page/Authentication.html";
     }
 
     try {
@@ -68,10 +67,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     const token = localStorage.getItem("token");
 
     if (!token) {
-        alert("Please login first!");
-        return;
+        window.location.href = "https://localhost:7170/page/Authentication.html";
     }
-
     try {
         const response = await fetch(`${apiUrl}/Coustomer/getCustomer`, {
             method: "GET",
@@ -144,3 +141,8 @@ function createInfoSections(data) {
     }
 }
 
+document.getElementById("logoutButton").addEventListener("click", () => {
+    localStorage.removeItem("token"); // delete token
+    alert("Logged out!");
+    window.location.href = "https://localhost:7170/page/Authentication.html";
+});

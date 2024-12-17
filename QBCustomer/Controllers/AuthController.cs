@@ -31,23 +31,29 @@ namespace QBCustomer.Controllers
             try
             {
                  await _authService.RegisterUser(request);
-                 return Ok(new { Message = "Registration successful. Please login." });
+                 return Ok();
             }
             catch (Exception ex) {
-                return BadRequest(ex);
+                return BadRequest(new { message = ex.Message });
             }
           
 
         }
-
-
-        [HttpPost("login")]
+       [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] UserLoginRequest request)
         {
-           var token= await _authService.LoginUser(request);
-            return Ok(new { Token=token });
+            try { 
+           var token = await _authService.LoginUser(request);
+            return Ok(new { Token = token });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
+
+ 
      
 
     }
