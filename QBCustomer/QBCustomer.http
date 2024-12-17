@@ -1,0 +1,6 @@
+@QBCustomer_HostAddress = http://localhost:5298
+
+GET {{QBCustomer_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

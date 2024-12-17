@@ -1,0 +1,37 @@
+﻿body {
+}
+
+.info-section {
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    padding: 15px;
+    border-radius: 5px;
+}
+
+    .info-section h2 {
+        margin-top: 0;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 10px;
+    }
+
+    .info-section p {
+        margin: 5px 0;
+    }
+
+.label {
+    font-weight: bold;
+    margin-right: 10px;
+    color: #555;
+}
+
+.value {
+    color: #333;
+}
+
+.CustomerDetails{
+    display: none;
+}
+
+.AuthorizeQb{
+    display: none;
+}
