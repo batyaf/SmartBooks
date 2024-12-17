@@ -8,7 +8,7 @@ namespace QBCustomer.Models
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [JsonIgnore] // Exclude from JSON
+        [JsonIgnore] 
         public int Id { get; set; } // Database primary key
 
         public int UsrId { get; set; }

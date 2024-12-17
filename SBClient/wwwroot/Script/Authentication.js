@@ -21,13 +21,14 @@ document.getElementById("registerForm").addEventListener("submit", async (e) => 
         if (response.ok) {
             const data = await response.json();
             alert("Registration successful!");
+            toggleForms(false);
         } else {
             const error = await response.json();
-            alert(`Error: ${error.message}`);
+            throw (error.message);
         }
     } catch (err) {
         console.error("Error:", err);
-        console.error("Error:", error);
+        alert(err);
     }
 });
 
@@ -49,7 +50,6 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
             const data = await response.json();
             localStorage.setItem("token", data.token); //save token
             alert("Login successful!");
-            //toggleForms("logout");
             window.location.href = "/page/CustomerDetails.html";
 
         } else {
@@ -90,11 +90,8 @@ function validatePassword(password) {
     const hasNumber = /[0-9]/.test(password);
     const hasSpecialChar = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password);
     const isLengthValid = password.length >= 6;
-
-    // Track overall password validity
     let isValid = true;
 
-    // Validation checks with specific error messages
     if (!hasUpperCase) {
         passwordText.textContent += "Must contain at least one uppercase letter. ";
         isValid = false;

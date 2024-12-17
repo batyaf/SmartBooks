@@ -1,14 +1,10 @@
 ﻿using Intuit.Ipp.Core;
 using Intuit.Ipp.Data;
-using Intuit.Ipp.OAuth2PlatformClient;
 using Intuit.Ipp.QueryFilter;
 using Intuit.Ipp.Security;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using QBCustomer.Models;
-using System.Text.Json;
-
 
 namespace QBCustomer.Services
 {
@@ -19,7 +15,7 @@ namespace QBCustomer.Services
         private readonly SbUsersService _sbUsersService;
         private readonly QuickBooksService _quickBooksService;
 
-        public CustomersService(SmartBooksContext db, SbUsersService sbUsersService,QuickBooksService quickBooksService)
+        public CustomersService(SmartBooksContext db, SbUsersService sbUsersService, QuickBooksService quickBooksService)
         {
             _db = db;
             _sbUsersService = sbUsersService;
@@ -27,12 +23,13 @@ namespace QBCustomer.Services
         }
 
         //get customer from QuickBooks
-        public async Task<object> getCustomerFromQBApi(string userId)
+        public async Task<object> GetCustomerFromQBApi(string userId)
         {
             try
             {
-                var customerToken= await GetTokenFromDb(userId);
-                if (customerToken == null) {
+                var customerToken = await GetTokenFromDb(userId);
+                if (customerToken == null)
+                {
                     throw new Exception("No QBToken exists for this userId.");
                 }
                 OAuth2RequestValidator oauthValidator = new OAuth2RequestValidator(customerToken.Token);
@@ -50,8 +47,8 @@ namespace QBCustomer.Services
                         NullValueHandling = NullValueHandling.Ignore
                     });
                     CustomerModel customerModel = ConvertJsonToCustomer(CustomerJson);
-                    customerModel.User =await _sbUsersService.GetUser(userId);
-                    var existingCustomer= await GetCustomerByUserId(userId);
+                    customerModel.User = await _sbUsersService.GetUser(userId);
+                    var existingCustomer = await GetCustomerByUserId(userId);
                     CustomerModel qbcustomer;
                     if (existingCustomer != null)
                     {
@@ -59,7 +56,7 @@ namespace QBCustomer.Services
                     }
                     else
                     {
-                       qbcustomer= await AddCustomerToDb(customerModel);
+                        qbcustomer = await AddCustomerToDb(customerModel);
                     }
                     return CreateCustomerResponse(qbcustomer, true);
                 }
@@ -74,33 +71,12 @@ namespace QBCustomer.Services
 
         }
 
-  
+
         public async Task<CustomerModel> AddCustomerToDb(CustomerModel customer)
         {
-            try
-            {
-                _db.Customers.Add(customer);
-                await _db.SaveChangesAsync();
-                return customer;
-            }
-            catch (DbUpdateException ex)
-            {
-                // Log the full exception details
-                Console.WriteLine($"Database update error: {ex.Message}");
-
-                // If there's an inner exception, log that too
-                if (ex.InnerException != null)
-                {
-                    Console.WriteLine($"Inner exception: {ex.InnerException.Message}");
-                }
-
-                throw; // Re-throw to allow caller to handle or log the error
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"General error saving customer: {ex.Message}");
-                throw;
-            }
+            _db.Customers.Add(customer);
+            await _db.SaveChangesAsync();
+            return customer;
         }
 
         public async Task<CustomerModel> UpdateCustomerInDb(CustomerModel existingCustomer, CustomerModel customer)
@@ -165,13 +141,13 @@ namespace QBCustomer.Services
 
         public async Task<object> GetCustomer(string userId)
         {
-            var customer= await GetCustomerByUserId(userId);
-            if(customer != null)
+            var customer = await GetCustomerByUserId(userId);
+            if (customer != null)
             {
-              return CreateCustomerResponse(customer,true);
+                return CreateCustomerResponse(customer, true);
             }
             var token = await GetTokenFromDb(userId);
-            return CreateCustomerResponse(customer, token!=null);
+            return CreateCustomerResponse(customer, token != null);
 
         }
         public async Task<CustomerModel?> GetCustomerByUserId(string userId)
@@ -181,16 +157,15 @@ namespace QBCustomer.Services
                 .Include(c => c.PrimaryPhone)
                 .Include(c => c.PrimaryEmailAddr)
                 .Include(c => c.User)
-                .FirstOrDefaultAsync(c => c.User.UserId == userId); 
+                .FirstOrDefaultAsync(c => c.User.UserId == userId);
             return existingCustomer;
         }
-
 
 
         public async Task<CustomerToken?> GetTokenFromDb(string userId)
         {
             var customerToken = await _db.CustomerTokens
-           .Include(c => c.User) 
+           .Include(c => c.User)
            .FirstOrDefaultAsync(c => c.User.UserId == userId);
 
             if (customerToken == null)
@@ -205,8 +180,6 @@ namespace QBCustomer.Services
             return customerToken;
         }
 
-       
-
 
         public static CustomerModel ConvertJsonToCustomer(string json)
         {
@@ -215,7 +188,7 @@ namespace QBCustomer.Services
                 var customer = JsonConvert.DeserializeObject<CustomerModel>(json, new JsonSerializerSettings
                 {
                     NullValueHandling = NullValueHandling.Ignore,
-                    MissingMemberHandling = MissingMemberHandling.Ignore 
+                    MissingMemberHandling = MissingMemberHandling.Ignore
                 });
                 return customer;
             }
@@ -227,41 +200,23 @@ namespace QBCustomer.Services
         }
 
 
-        public string ConvertCustomerToJson(CustomerModel customer)
-        {
-            try
-            {
-                string json = JsonConvert.SerializeObject(customer, new JsonSerializerSettings
-                {
-                    NullValueHandling = NullValueHandling.Ignore, 
-                    Formatting = Formatting.Indented 
-                });
-                return json;
-            }
-            catch (Newtonsoft.Json.JsonException ex)
-            {
-                Console.WriteLine($"Error serializing customer: {ex.Message}");
-                return null;
-            }
-        }
-
-        public object CreateCustomerResponse(CustomerModel customer,bool isAuthorticated)
+        public object CreateCustomerResponse(CustomerModel customer, bool isAuthorticated)
         {
             return new
             {
                 IsAuthorticated = isAuthorticated,
-                Customer = customer!= null? new
+                Customer = customer != null ? new
                 {
                     BasicInfo = new { customer.FullyQualifiedName, customer.DisplayName, customer.CompanyName, customer.Active },
                     ContactInfo = new { customer.PrimaryEmailAddr?.Address, customer.PrimaryPhone?.FreeFormNumber },
                     BillingInfo = new { customer.Balance, customer.BalanceWithJobs, customer.Taxable, customer.PreferredDeliveryMethod },
                     AdditionalInfo = new { customer.Job, customer.BillWithParent, customer.QuickBooksId }
-                }: null,
+                } : null,
             };
         }
 
 
-     
+
 
     }
 }

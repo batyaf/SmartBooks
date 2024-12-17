@@ -1,16 +1,6 @@
-﻿using Intuit.Ipp.Data;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.Data;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.AspNetCore.Mvc;
 using QBCustomer.Models;
 using QBCustomer.Services;
-using QBCustomer.Utils;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 
 namespace QBCustomer.Controllers
 {
@@ -30,21 +20,8 @@ namespace QBCustomer.Controllers
         {
             try
             {
-                 await _authService.RegisterUser(request);
-                 return Ok();
-            }
-            catch (Exception ex) {
-                return BadRequest(new { message = ex.Message });
-            }
-          
-
-        }
-       [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] UserLoginRequest request)
-        {
-            try { 
-           var token = await _authService.LoginUser(request);
-            return Ok(new { Token = token });
+                await _authService.RegisterUser(request);
+                return Ok();
             }
             catch (Exception ex)
             {
@@ -53,8 +30,23 @@ namespace QBCustomer.Controllers
         }
 
 
- 
-     
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] UserLoginRequest request)
+        {
+            try
+            {
+                var token = await _authService.LoginUser(request);
+                return Ok(new { Token = token });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+
+
+
 
     }
 }

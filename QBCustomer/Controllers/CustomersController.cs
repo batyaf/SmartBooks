@@ -1,8 +1,5 @@
-﻿using Azure;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 using QBCustomer.Services;
 using System.Security.Claims;
 
@@ -21,12 +18,12 @@ namespace QBCustomer.Controllers
 
 
         [HttpGet("getFromQB")]
-        public async Task<IActionResult> getCoustomeFromQB()
+        public async Task<IActionResult> GetCoustomeFromQB()
         {
             try
             {
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                var output = await _customersService.getCustomerFromQBApi(userId);
+                var output = await _customersService.GetCustomerFromQBApi(userId);
                 return Ok(output);
             }
             catch (Exception ex) {
@@ -37,11 +34,18 @@ namespace QBCustomer.Controllers
 
 
         [HttpGet("getCustomer")]
-        public  async Task<IActionResult> getCoustomerfromDb()
+        public  async Task<IActionResult> GetCoustomerfromDb()
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var output =await _customersService.GetCustomer(userId);
-            return Ok(output);
+            try
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var output = await _customersService.GetCustomer(userId);
+                return Ok(output);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
     }
 }

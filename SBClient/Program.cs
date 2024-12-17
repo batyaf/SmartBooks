@@ -6,12 +6,8 @@ namespace SBClient
         {
             var builder = WebApplication.CreateBuilder(args);
             var app = builder.Build();
-
             app.UseStaticFiles();
-
-            
             app.MapGet("/", () => Results.Redirect("/page/Authentication.html"));
-
             app.Run();
         }
     }

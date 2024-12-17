@@ -1,10 +1,8 @@
-﻿using Intuit.Ipp.Data;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using QBCustomer.Models;
 using QBCustomer.Utils;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq.Expressions;
 using System.Security.Claims;
 using System.Text;
 
@@ -34,11 +32,13 @@ namespace QBCustomer.Services
             var result = await _userManager.CreateAsync(user, request.Password);
             if (!result.Succeeded)
             {
+                string err = "User registration failed: ";
                 foreach (var error in result.Errors)
-                {
-                    Console.WriteLine(error.Description); 
+                { 
+                    Console.WriteLine(error.Description);
+                    err += $"{error.Description}, ";
                 }
-                throw new Exception("User registration failed");
+                throw new Exception(err);
             }
             var sbUser = await AddNewUser(user.Id);
             return sbUser;
@@ -80,12 +80,5 @@ namespace QBCustomer.Services
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
         }
-
-
-       
-
-
-      
-
     }
 }

@@ -15,8 +15,6 @@ namespace QBCustomer.Models
 
         public DbSet<SBUser> sbUsers { get; set; }
 
-        
-
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

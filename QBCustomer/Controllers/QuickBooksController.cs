@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using QBCustomer.Services;
 using System.Security.Claims;
@@ -19,24 +18,30 @@ namespace QBCustomer.Controllers
         [HttpGet("QBAuthorize")]
         public IActionResult QBAuthorize()
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            string url = _quickBooksService.InitiateAuth(userId);
-            return Ok(url);
-
+            try
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                string url = _quickBooksService.InitiateAuth(userId);
+                return Ok(url);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
 
         [HttpGet("getToken")]
         public async Task<ActionResult> GetToken()
         {
-            string code = Request.Query["code"].ToString() ?? "none";
-            string realmId = Request.Query["realmId"].ToString() ?? "none";
-            string state = Request.Query["state"].ToString() ?? "none";
-            await _quickBooksService.SaveToken(code, realmId,state);
+            string code = Request.Query["code"].ToString();
+            string realmId = Request.Query["realmId"].ToString();
+            string state = Request.Query["state"].ToString();
+            if (code != null && realmId != null && state != null)
+            {
+                await _quickBooksService.SaveToken(code, realmId, state);
+            }
             return Redirect("https://localhost:7170/page/CustomerDetails.html");
         }
-
-      
-
     }
 }
