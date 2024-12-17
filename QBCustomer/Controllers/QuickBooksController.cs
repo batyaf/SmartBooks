@@ -6,7 +6,6 @@ using System.Security.Claims;
 
 namespace QBCustomer.Controllers
 {
-    [Authorize]
     [Route("api/QB")]
     [ApiController]
     public class QuickBooksController : ControllerBase
@@ -16,16 +15,18 @@ namespace QBCustomer.Controllers
         {
             _quickBooksService = quickBooksService;
         }
-
+        [Authorize]
         [HttpGet("QBAuthorize")]
         public IActionResult QBAuthorize()
         {
             string url = _quickBooksService.InitiateAuth();
-            return Redirect(url);
+            //return Redirect(url);
+            return Ok(url);
+
         }
 
 
-        [HttpGet("smartBook/getToken")]
+        [HttpGet("getToken")]
         public async Task<ActionResult> GetToken()
         {
             string code = Request.Query["code"].ToString() ?? "none";

@@ -31,7 +31,7 @@ namespace QBCustomer.Controllers
             try
             {
                  await _authService.RegisterUser(request);
-                 return RedirectToAction("Login", "Auth");
+                 return Ok(new { Message = "Registration successful. Please login." });
             }
             catch (Exception ex) {
                 return BadRequest(ex);

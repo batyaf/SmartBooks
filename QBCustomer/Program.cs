@@ -48,18 +48,18 @@ namespace QBCustomer
                     ValidateAudience = true,
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
-                    ValidIssuer = "yourIssuer",
-                    ValidAudience = "yourAudience",
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("yourSecretKey"))
+                    ValidIssuer = AppConfig.AppSettings["Jwt:Issuer"],
+                    ValidAudience = AppConfig.AppSettings["Jwt:Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(AppConfig.AppSettings["Jwt:SecretKey"]))
                 };
             });
 
-            // שינוי זה נדרש
+           
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowClient", builder =>
                 {
-                    builder.WithOrigins("http://localhost:7170") 
+                    builder.WithOrigins("https://localhost:7170") 
                            .AllowAnyHeader()
                            .AllowAnyMethod()
                            .AllowCredentials(); 

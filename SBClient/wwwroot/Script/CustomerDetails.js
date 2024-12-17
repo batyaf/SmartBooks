@@ -1,4 +1,4 @@
-﻿const apiUrl = "http://localhost:7145/api";
+﻿const apiUrl = "https://localhost:5001/api";
 
 //Bring Customer Details From QB
 document.getElementById("GetDetailsFromQb").addEventListener(onclick, async (e) => {
@@ -32,7 +32,7 @@ document.getElementById("GetDetailsFromQb").addEventListener(onclick, async (e) 
     }
 });
 
-document.getElementById("AuthorizeQb").addEventListener(onclick, async (e) => {
+document.getElementById("AuthorizeQb").addEventListener("click", async (e) => {
     e.preventDefault();
     const token = localStorage.getItem("token");
 
@@ -51,6 +51,8 @@ document.getElementById("AuthorizeQb").addEventListener(onclick, async (e) => {
         });
 
         if (response.ok) {
+            const authUrl = await response.text(); 
+            window.location.href = authUrl;
             toggleAuthanticate(true);
         } else {
             const error = await response.json();
@@ -62,8 +64,7 @@ document.getElementById("AuthorizeQb").addEventListener(onclick, async (e) => {
     }
 });
 
-document.getElementById("body").addEventListener(onload, async (e) => {
-    e.preventDefault();
+document.addEventListener("DOMContentLoaded", async () => {
     const token = localStorage.getItem("token");
 
     if (!token) {
@@ -72,7 +73,7 @@ document.getElementById("body").addEventListener(onload, async (e) => {
     }
 
     try {
-        const response = await fetch(`${apiUrl}/Coustomer`, {
+        const response = await fetch(`${apiUrl}/Coustomer/getCustomer`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -98,6 +99,7 @@ document.getElementById("body").addEventListener(onload, async (e) => {
         alert("Failed to fetch data.");
     }
 });
+
 
 
 

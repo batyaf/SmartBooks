@@ -32,7 +32,14 @@ namespace QBCustomer.Services
         {
             var user = new IdentityUser { UserName = request.Username, Email = request.Email };
             var result = await _userManager.CreateAsync(user, request.Password);
-            //Todo: throw  
+            if (!result.Succeeded)
+            {
+                foreach (var error in result.Errors)
+                {
+                    Console.WriteLine(error.Description); 
+                }
+                throw new Exception("User registration failed");
+            }
             var sbUser = await AddNewUser(user.Id);
             return sbUser;
         }

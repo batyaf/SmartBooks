@@ -30,7 +30,7 @@ namespace QBCustomer.Controllers
 
 
 
-        [HttpGet]
+        [HttpGet("getCustomer")]
         public  async Task<IActionResult> getCoustomerfromDb()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);

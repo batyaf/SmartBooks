@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -8,6 +8,15 @@
 
   <ItemGroup>
     <ProjectReference Include="..\QBCustomer\QBCustomer.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\page\Authentication.html" />
+    <None Include="wwwroot\page\CustomerDetails.html" />
+    <None Include="wwwroot\Script\Authentication.js" />
+    <None Include="wwwroot\Script\CustomerDetails.js" />
+    <None Include="wwwroot\Style\Authentication.css" />
+    <None Include="wwwroot\Style\CustomerDetails.css" />
   </ItemGroup>
 
 </Project>
